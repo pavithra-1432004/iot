@@ -1,0 +1,536 @@
+1.	LED
+ // Define the pin number for the LED
+const int ledPin = 13;
+void setup() {
+// Set the LED pin as an output
+pinMode(ledPin, OUTPUT);
+}
+void loop() {
+// Turn the LED on
+digitalWrite(ledPin, HIGH);
+delay(1000); // Wait for 1 second
+// Turn the LED off
+digitalWrite(ledPin, LOW);
+delay(1000); // Wait for 1 second
+
+}
+
+
+2.	Object detection :
+// Define the pins for the ultrasonic sensor
+const int trigPin = 2;
+const int echoPin = 3;
+// Define the pin for the buzzer
+const int buzzerPin = 4;
+// Define the distance threshold in centimeters
+const int distanceThreshold = 20;
+void setup() {
+// Set the trigPin as an output and echoPin as an input
+pinMode(trigPin, OUTPUT);
+pinMode(echoPin, INPUT);
+
+// Set the buzzerPin as an output
+pinMode(buzzerPin, OUTPUT);
+}
+void loop() {
+// Clear the trigger pin
+digitalWrite(trigPin, LOW);
+delayMicroseconds(2);
+// Set the trigger pin high for 10 microseconds to send the ultrasonic pulse
+digitalWrite(trigPin, HIGH);
+delayMicroseconds(10);
+digitalWrite(trigPin, LOW);
+// Measure the duration of the echo pulse
+long duration = pulseIn(echoPin, HIGH);
+// Calculate the distance in centimeters
+int distance = duration * 0.034 / 2;
+// Check if the distance is below the threshold
+if (distance < distanceThreshold) {
+// Activate the buzzer
+digitalWrite(buzzerPin, HIGH);
+} else {
+// Deactivate the buzzer
+digitalWrite(buzzerPin, LOW);
+}
+// Wait for a short delay before taking the next measurement
+delay(100);
+}
+
+3.	Smart cradle
+
+// Pin definitions for water sensor, sound sensor, and buzzer
+const int waterSensorPin = A0;
+const int soundSensorPin = A1;
+const int buzzerPin = D1;
+
+// Threshold values for water and sound
+const int waterThreshold = 500;    // Adjust this value based on your sensor calibration
+const int soundThreshold = 500;    // Adjust this value based on your sensor calibration
+
+void setup() {
+// Set the pin modes
+pinMode(waterSensorPin, INPUT);
+pinMode(soundSensorPin, INPUT);
+pinMode(buzzerPin, OUTPUT);
+
+// Initialize Serial for debugging
+Serial.begin(9600);
+}
+
+void loop() {
+// Read sensor values
+int waterValue = analogRead(waterSensorPin);
+int soundValue = analogRead(soundSensorPin);
+
+// Check if water level is above threshold
+if (waterValue > waterThreshold) {
+Serial.println("Water detected!");
+activateBuzzer();
+} else {
+Serial.println("No water detected.");
+deactivateBuzzer();
+}
+
+// Check if sound level is above threshold
+if (soundValue > soundThreshold) {
+Serial.println("Sound detected!");
+activateBuzzer();
+} else {
+Serial.println("No sound detected.");
+deactivateBuzzer();
+}
+
+delay(1000); // Adjust the delay time based on your requirements
+}
+
+// Function to activate the buzzer
+void activateBuzzer() {
+digitalWrite(buzzerPin, HIGH);
+}
+
+// Function to deactivate the buzzer
+void deactivateBuzzer() {
+digitalWrite(buzzerPin, LOW);
+}
+
+4.	Led using rassberry pie
+
+import RPi.GPIO as GPIO    # Import Raspberry Pi GPIO library
+from time import sleep     # Import the sleep function from the time module
+GPIO.setwarnings(False)    # Ignore warning for now
+GPIO.setmode(GPIO.BOARD)   # Use physical pin numbering
+GPIO.setup(8, GPIO.OUT, initial=GPIO.LOW)while True: # Run forever
+GPIO.output(8, GPIO.HIGH) # Turn on
+sleep(1)                  # Sleep for 1 second
+GPIO.output(8, GPIO.LOW)  # Turn off
+sleep(1)                  # Sleep for 1 second
+import RPi.GPIO as GPIO # Import Raspberry Pi GPIO library
+from time import sleep # Import the sleep function from the time module
+GPIO.setwarnings(False) # Ignore warning for now
+GPIO.setmode(GPIO.BOARD) # Use physical pin numbering
+GPIO.setup(8, GPIO.OUT, initial=GPIO.LOW) # Set pin 8 to be an output pin and set initial value to low (off)
+while True: # Run forever
+GPIO.output(8, GPIO.HIGH) # Turn on
+sleep(1) # Sleep for 1 second
+GPIO.output(8, GPIO.LOW) # Turn off
+sleep(1) # Sleep for 1 second
+
+
+5.	Automatic dog feeder
+
+
+#define BLYNK_TEMPLATE_ID "TMPL3Ad4GHndu"
+#define BLYNK_TEMPLATE_NAME "CONTROL LED"
+#define BLYNK_AUTH_TOKEN "pkg9h3UxIO0lHUXFv3qYMdfNeIibeGZ9"
+#define BLYNK_PRINT Serial
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+char auth[] = BLYNK_AUTH_TOKEN;
+char ssid[] = "Makers Tribe";  // Enter your Wifi Username
+char pass[] = "1404@OMR";  // Enter your Wifi password
+int ledpin = D4;
+void setup()
+{
+Serial.begin(115200);
+Blynk.begin(auth, ssid, pass);
+pinMode(ledpin,OUTPUT);
+}
+
+void loop()
+{
+Blynk.run();
+}
+
+6.	button controller LED
+
+//Include the library files
+#define BLYNK_PRINT Serial
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+#define light1 D1
+#define light2 D2
+#define wifiLed D0
+#define BLYNK_AUTH_TOKEN "vYa6FZ4yJQ8CLrW2zHOF_iUvdEtuufMy" //Enter your blynk auth token
+char auth[] = BLYNK_AUTH_TOKEN;
+char ssid[] = "Pavithra Velmurugan";//Enter your WIFI name
+char pass[] = "1404@OMR";//Enter your WIFI password
+//Get the button values
+BLYNK_WRITE(V0) {
+bool value1 = param.asInt();
+// Check these values and turn the relay1 ON and OFF
+if (value1 == 1) {
+digitalWrite(light1, LOW);
+} else {
+digitalWrite(light1, HIGH);
+}
+}
+//Get the button values
+BLYNK_WRITE(V1) {
+bool value2 = param.asInt();
+// Check these values and turn the relay2 ON and OFF
+if (value2 == 1) {
+digitalWrite(light2, LOW);
+} else {
+digitalWrite(light2, HIGH);
+}
+}
+void setup() {
+Serial.begin(9600);
+delay(100);
+//Set the relay pins as output pins
+pinMode(light1, OUTPUT);
+pinMode(light2, OUTPUT);
+pinMode(wifiLed,OUTPUT);
+// Turn OFF the relay
+digitalWrite(light1, HIGH);
+digitalWrite(light2, HIGH);
+digitalWrite(wifiLed,HIGH);
+//Initialize the Blynk library
+Blynk.begin(auth, ssid, pass, "blynk.cloud", 80);
+}
+void loop() {
+//Run the Blynk library
+Blynk.run();
+}
+
+
+
+
+
+7.	smart house :
+
+#include <Servo.h>
+// Pin definitions for ultrasonic sensor, LED, and servo motor
+const int trigPin = 2;
+const int echoPin = 3;
+const int ledPin = 4;
+const int servoPin = 5;
+// Define the distance threshold in centimeters
+const int distanceThreshold = 20;
+// Create a servo object
+Servo myservo;
+void setup() {
+// Set the trigPin as an output and echoPin as an input
+pinMode(trigPin, OUTPUT);
+pinMode(echoPin, INPUT);
+// Set the ledPin as an output
+pinMode(ledPin, OUTPUT);
+// Attach the servo to the servoPin
+myservo.attach(servoPin);
+// Set the initial position of the servo
+myservo.write(90);  // 90 degrees is the middle position
+}
+void loop() {
+// Clear the trigger pin
+digitalWrite(trigPin, LOW);
+delayMicroseconds(2)
+// Set the trigger pin high for 10 microseconds to send the ultrasonic pulse
+digitalWrite(trigPin, HIGH);
+delayMicroseconds(10);
+digitalWrite(trigPin, LOW);
+// Measure the duration of the echo pulse
+long duration = pulseIn(echoPin, HIGH);
+// Calculate the distance in centimeters
+int distance = duration * 0.034 / 2;
+// Check if the distance is below the threshold
+if (distance < distanceThreshold) {
+// Turn on the LED
+digitalWrite(ledPin, HIGH);
+// Rotate the servo to one side
+myservo.write(0);  // 0 degrees
+} else {
+// Turn off the LED
+digitalWrite(ledPin, LOW);
+// Rotate the servo to the other side
+myservo.write(180);  // 180 degrees
+}
+// Wait for a short delay before taking the next measurement
+delay(100);
+}
+
+
+8.	smart car
+
+/*obstacle avoiding,bluetooth control,voice control robot car.
+https://srituhobby.com
+*/
+#include <Servo.h>
+#include <AFMotor.h>
+
+#define Echo A0
+#define Trig A1
+#define motor 10
+#define Speed 170
+#define spoint 103
+
+char value;
+int distance;
+int Left;
+int Right;
+int L = 0;
+int R = 0;
+int L1 = 0;
+int R1 = 0;
+
+Servo servo;
+AF_DCMotor M1(1);
+AF_DCMotor M2(2);
+AF_DCMotor M3(3);
+AF_DCMotor M4(4);
+
+void setup() {
+Serial.begin(9600);
+pinMode(Trig, OUTPUT);
+pinMode(Echo, INPUT);
+servo.attach(motor);
+M1.setSpeed(Speed);
+M2.setSpeed(Speed);
+M3.setSpeed(Speed);
+M4.setSpeed(Speed);
+}
+void loop() {
+//Obstacle();
+//Bluetoothcontrol();
+voicecontrol();
+}
+
+void Bluetoothcontrol() {
+if (Serial.available() > 0) {
+value = Serial.read();
+Serial.println(value);
+}
+if (value == 'F') {
+forward();
+} else if (value == 'B') {
+backward();
+} else if (value == 'L') {
+left();
+} else if (value == 'R') {
+right();
+} else if (value == 'S') {
+Stop();
+}
+}
+
+void Obstacle() {
+distance = ultrasonic();
+if (distance <= 10) {
+Stop();
+backward();
+delay(100);
+Stop();
+L = leftsee();
+servo.write(spoint);
+delay(800);
+R = rightsee();
+servo.write(spoint);
+if (L < R) {
+right();
+delay(500);
+Stop();
+delay(200);
+} else if (L > R) {
+left();
+delay(500);
+Stop();
+delay(200);
+}
+} else {
+forward();
+}
+
+}
+
+void voicecontrol() {
+if (Serial.available() > 0) {
+value = Serial.read();
+Serial.println(value);
+if (value == '^') {
+forward();
+} else if (value == '-') {
+backward();
+} else if (value == '<') {
+L = leftsee();
+servo.write(spoint);
+if (L >= 10 ) {
+left();
+delay(500);
+Stop();
+} else if (L < 10) {
+Stop();
+}
+} else if (value == '>') {
+R = rightsee();
+servo.write(spoint);
+if (R >= 10 ) {
+right();
+delay(500);
+Stop();
+} else if (R < 10) {
+Stop();
+}
+} else if (value == '*') {
+Stop();
+}
+}
+}
+
+int ultrasonic() {
+digitalWrite(Trig, LOW);
+delayMicroseconds(4);
+digitalWrite(Trig, HIGH);
+delayMicroseconds(10);
+digitalWrite(Trig, LOW);
+long t = pulseIn(Echo, HIGH);
+long cm = t / 29 / 2; //time convert distance
+return cm;
+}
+
+void forward() {
+M1.run(FORWARD);
+M2.run(FORWARD);
+M3.run(FORWARD);
+M4.run(FORWARD);
+}
+void backward() {
+M1.run(BACKWARD);
+M2.run(BACKWARD);
+M3.run(BACKWARD);
+M4.run(BACKWARD);
+}
+void right() {
+M1.run(BACKWARD);
+M2.run(BACKWARD);
+M3.run(FORWARD);
+M4.run(FORWARD);
+}
+void left() {
+M1.run(FORWARD);
+M2.run(FORWARD);
+M3.run(BACKWARD);
+M4.run(BACKWARD);
+}
+void Stop() {
+M1.run(RELEASE);
+M2.run(RELEASE);
+M3.run(RELEASE);
+M4.run(RELEASE);
+}
+int rightsee() {
+servo.write(20);
+delay(800);
+Left = ultrasonic();
+return Left;
+}
+
+int leftsee() {
+servo.write(180);
+delay(800);
+Right = ultrasonic();
+return Right;
+}
+
+9.	LED using ultrasonic
+
+// Define the pins for ultrasonic sensor
+const int trigPin = 2;  // Trig pin
+const int echoPin = 3;  // Echo pin
+
+// Define the pin for LED
+const int ledPin = 13;  // Built-in LED pin
+
+// Variables
+long duration;  // Time taken for the ultrasonic wave to return
+int distance;   // Calculated distance in centimeters
+
+void setup() {
+// Initialize Serial communication
+Serial.begin(9600);
+
+// Initialize ultrasonic sensor pins
+pinMode(trigPin, OUTPUT);
+pinMode(echoPin, INPUT);
+
+// Initialize LED pin
+pinMode(ledPin, OUTPUT);
+}
+
+void loop() {
+// Send a short pulse to the trigger pin of the ultrasonic sensor
+digitalWrite(trigPin, LOW);
+delayMicroseconds(2);
+digitalWrite(trigPin, HIGH);
+delayMicroseconds(10);
+digitalWrite(trigPin, LOW);
+
+// Measure the duration of the pulse in the echo pin
+duration = pulseIn(echoPin, HIGH);
+
+// Calculate the distance based on the speed of sound
+distance = duration * 0.034 / 2;
+
+// Print the distance on the serial monitor
+Serial.print("Distance: ");
+Serial.print(distance);
+Serial.println(" cm");
+
+// Turn on the LED if the distance is less than 10 cm
+if (distance < 10) {
+digitalWrite(ledPin, HIGH);
+} else {
+digitalWrite(ledPin, LOW);
+}
+
+// Delay before the next measurement
+delay(1000);
+}
+
+10.	Servo distance indicator
+
+
+#include <Servo.h>
+
+#include <NewPing.h>
+
+const int ServoPin = 10;
+const int TriggerPin = 6;
+const int EchoPin = 7;
+
+// 100 = maxDistance
+NewPing sonar (TriggerPin, EchoPin, 100);
+Servo servo;
+
+void setup() {
+Serial.begin(9600);
+servo.attach(ServoPin);
+}
+
+void loop() {
+int cm = sonar.ping_cm();
+Serial.println(cm);
+
+int angle = map(cm, 2, 15, 15, 100);
+servo.write(angle);
+
+delay(50);
+}
